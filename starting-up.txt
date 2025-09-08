@@ -2,6 +2,6 @@ Starting up the Terminal
 
 Just put => docker compose up -d <= and it will start up.
 
-To check the website => http://localhost:8080/dmit-2025-workbook/
+To check the website => http://localhost:8080/dmit-2025-workbook-a02-fall-2025/
 
 Just put => docker compose down <= and this will turn it off.
