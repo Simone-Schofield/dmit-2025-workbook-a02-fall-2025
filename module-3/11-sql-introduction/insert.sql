@@ -1,0 +1,18 @@
+/*
+    INSERT in the CREATE part of CRUD. It allows us to add records into a specified row.
+
+    The syntax looks like this:
+
+    INSERT INTO table_name (column_1, column_2, column_3, ...) VALUES (value_1, value_2, value_3, ...);
+*/
+
+-- Let's enter a new city. We'll use a few unique town names for our examples. This one is the only town in the world with two exclamation points in the name.
+
+INSERT INTO cities (city_name, province, population, is_capital, trivia) VALUES 
+('Saint-Louis-du-Ha! Ha!', 'QC', 1311, FALSE, 'A ha-ha is an archaic French world for an impasse, also known as a sunk fence, blind fence, or deer wall.');
+
+-- But what if we want to enter mulitple cities at once?
+INSERT INTO cities (city_name, province, population, is_capital, trivia) VALUES 
+('Happy Adventure', 'NL', 118, FALSE, NULL),
+('Flin Flon', 'MB', 5099, FALSE, NULL),
+('Vulcan', 'AB', 1769, FALSE, 'Although originally named after the Roman God of Fire (Vulcan), this town features several Star Trek themed attractions.');
