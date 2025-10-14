@@ -108,7 +108,7 @@ require '../private/process-form.php';
                         Because users can submit anything (not just values from the list), we should still validate their input the same way we would for a regular text input.
                      -->
 
-                                         <div class="mb-4">
+                    <div class="mb-4">
                         <?php if (!empty($message_region)) echo $message_region; ?>
 
                         <label for="region" class="form-label">Preferred Global Region for Assignments:</label>
