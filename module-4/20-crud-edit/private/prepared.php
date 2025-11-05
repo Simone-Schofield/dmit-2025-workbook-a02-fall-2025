@@ -87,20 +87,21 @@ function insert_city($city_name, $province, $population, $is_capital, $trivia) {
 }
 
 
-/** 
- * DELETE a city using the city ID (the primary key). Used in the delete-confirmation page.
+/**
+ * DELETE a city using the city ID (the primarky key). Used in the delete-confirmation page.
  * 
  * @param int $cid - the primary key of the record.
  * 
  * @return bool|mysqli_result - TRUE or FALSE depending upon deletion success.
-*/
-function delete_city($cid){
+ */
+function delete_city($cid) {
     $query = "DELETE FROM cities WHERE cid = ?;";
     return execute_prepared_statement($query, [$cid], "i");
 }
 
+
 /**
- * SELECT (retrieve) a specific city by ID; used in the EDIT page.
+ * SELECT (retrieve) a specific city by ID; used in the Edit page.
  * 
  * @param int $cid - the primary key for the record.
  * 
@@ -109,7 +110,25 @@ function delete_city($cid){
 function select_city_by_id($cid) {
     $query = "SELECT * FROM cities WHERE cid = ?;";
     $result = execute_prepared_statement($query, [$cid], "i");
-    
+
     return $result->fetch_assoc();
+}
+
+
+/**
+ * UPDATE an existing city record; used in the Edit page.
+ * 
+ * @param string $city_name
+ * @param string $province
+ * @param int $population
+ * @param int|null $is_capital
+ * @param string|null $trivia
+ * @param int $cid
+ * @return bool|mysqli_result
+ */
+function update_city($city_name, $province, $population, $is_capital, $trivia, $cid) {
+    $query = "UPDATE cities SET `city_name` = ?, `province` = ?, `population` = ?, `is_capital` = ?, `trivia` = ? WHERE `cid` = ?;";
+
+    return execute_prepared_statement($query, [$city_name, $province, $population, $is_capital, $trivia, $cid], "ssiisi");
 }
 ?>
