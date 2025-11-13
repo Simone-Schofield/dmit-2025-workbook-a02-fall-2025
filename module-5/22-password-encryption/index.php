@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <?php if ($second_password != "") : ?>
-                    <div class="border border-warning rounded p-3">
+                    <div class="border border-warning rounded p-3 mb-3">
                         <p class="form-text">For the second password, you entered: <?= $second_password; ?></p>
                         <p class="form-text">When encrypted, it produced the following hash: <?= $second_hash; ?></p>
                         <p class="form-text">In the real world, this password would be what a user types when trying to log in. The PHP engine would then compare it to the hash stored in the database to see if it's statistically likely that the passwords are identical.</p>
