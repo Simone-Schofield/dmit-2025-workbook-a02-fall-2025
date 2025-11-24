@@ -4,30 +4,33 @@ $message = $message ?? "";
 $img_title = $_POST['img-title'] ?? "";
 $img_description = $_POST['img-description'] ?? "";
 
-if (isset($_POST['submit']) && !empty($_FILES['img-file']['name'])) {
+// BUG FIX: ['img-file]'] had a stray bracket.
+if (isset($_POST['submit'], $_FILES['img-file']) && !empty($_FILES['img-file']['name'])) {
+
     $file_name = $_FILES['img-file']['name'];
     $file_temp_name = $_FILES['img-file']['tmp_name'];
     $file_size = $_FILES['img-file']['size'];
 
-    // The $_FILES['img-file']['error'] value contains an error code indicating the status of the file uploaded. A value of 0 (which corresponds to the contant UPLOAD_ERR_OK) means that no error occurred.
+    // The $_FILES['img-file']['error'] value contains an error code indicating the status of the file upload. A value of 0 (which corresponds to the constant UPLOAD_ERR_OK) means that no errors occured.
     if ($_FILES['img-file']['error'] === 0) {
 
         // Next, let's grab the uploaded file's extension (ex. .jpg, .web ...).
         $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-        // Here's an array with all of the allowed file types.
+        // Here's an array with all of the allowed file types. 
         $allowed = array('avif', 'jpg', 'jpeg', 'png', 'webp');
 
         if (in_array($file_extension, $allowed)) {
 
-            // This checks to see if the file size is below 2MB (convert to bytes for PHP).
+            // This checks to see if the file size is below 2MB (converted to bytes for PHP).
             if ($file_size < 2000000) {
-                
-                // This function will generate a unique filename for us, based upon microseconds. This helps us avoid data collisons on larfer applications. It's important we do this rather than just keep a file's original name because otherwise we might run into issues like one user uploading and a another user uploading and overwriting that file with a different 'doggy.jpg' at a later date.
+
+                // This function will generate a unique filename for us, based upon microseconds. This helps us avoid data collisions on larger applications. It's important we do this rather than just keep a file's original name because otherwise we might run into issues like one user uploading 'doggy.jpg' and another user uploading and overwriting that file with a different 'doggy.jpg' at a later date.
+                // BUG FIX: $file_extension was missing an underscore.
                 $file_name_new = uniqid('', TRUE) . ".$file_extension";
                 $file_destination = "images/full/$file_name_new";
 
-                // Let's make sure the necessary directories (i.e. where we are going to store our images) actually exists and that PHP has read/write permissons.
+                // Let's make sure the necessary directories (i.e. where we are going to store our images) actually exist and that PHP has read/write permissions.
                 if (!is_dir('images/full/')) {
                     mkdir('images/full/', 0777, TRUE);
                 }
@@ -172,18 +175,30 @@ if (isset($_POST['submit']) && !empty($_FILES['img-file']['name'])) {
                 imagedestroy($temp_image);
                 imagedestroy($final_image);
                 imagedestroy($thumb_img);
-            
+
+                // Finally, we need to insert all of our metadata into the database so that our gallery script can find everything that it needs to function.
+                $sql = "INSERT INTO gallery_prep (`title`, `description`, `filename`, `uploaded_on`) VALUES (?, ?, ?, NOW());";
+                $statement = $connection->prepare($sql);
+                $statement->bind_param("sss", $img_title, $img_description, $file_name_new);
+                $statement->execute();
+
+                $message = "Your image was successfully uploaded!";
+
             } else {
                 $message .= "The file size limit is 2MB. Please upload a smaller image file.";
             }
-        
+
         } else {
-            $message .= "Your image must be one of the following types: AVIF, JPG, JPEG, PNG, or WebP.";
+            $message .= "Your image must be one of the following file types: AVIF, JPG, JPEG, PNG, or WebP.";
         }
 
     } else {
         $message .= "There was an error with your file. Please make sure it isn't corrupted and try uploading again later.";
     }
+
+} elseif (isset($_POST['submit'])) {
+    // If the form is submitted without a file chosen ...
+    $message .= "Please choose an image file before uploading.";
 }
 
 ?>

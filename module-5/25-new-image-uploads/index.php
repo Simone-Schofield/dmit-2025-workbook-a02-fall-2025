@@ -84,3 +84,5 @@ include 'includes/upload.php';
         </form>
     </div>
 </section>
+
+<?php include 'includes/footer.php'; ?>
